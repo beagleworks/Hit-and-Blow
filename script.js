@@ -187,9 +187,7 @@ class HitAndBlowGame {
     }
 
     // エラー表示
-    showError(message) {
-        // 簡易的なエラー表示（アラート）
-        // より洗練された実装も可能
+    showError() {
         const inputs = document.querySelectorAll('.digit-input');
         inputs.forEach(input => {
             input.style.borderColor = '#f5576c';
