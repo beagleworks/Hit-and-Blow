@@ -13,7 +13,6 @@ class HitAndBlowGame {
         for (let i = 0; i < 4; i++) {
             digits.push(Math.floor(Math.random() * 10));
         }
-        console.log('Answer:', digits.join('')); // デバッグ用（本番では削除可能）
         return digits;
     }
 
