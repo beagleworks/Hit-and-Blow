@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ヒットアンドブロー - Hit and Blow Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 ヒットアンドブロー</h1>
+            <p class="subtitle">4桁の数字を当てよう！</p>
+        </header>
+
+        <div class="game-board">
+            <!-- ゲーム情報 -->
+            <div class="game-info">
+                <div class="info-card">
+                    <span class="info-label">試行回数</span>
+                    <span class="info-value" id="attempts">0</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label">🎯 Hit</span>
+                    <span class="info-value" id="lastHit">-</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label">💨 Blow</span>
+                    <span class="info-value" id="lastBlow">-</span>
+                </div>
+            </div>
+
+            <!-- ルール説明 -->
+            <div class="rules-section">
+                <button class="rules-toggle" id="rulesToggle">ルールを見る 📖</button>
+                <div class="rules-content" id="rulesContent">
+                    <h3>ゲームルール</h3>
+                    <ul>
+                        <li><strong>Hit:</strong> 数字と位置が両方正解</li>
+                        <li><strong>Blow:</strong> 数字は正解だが位置が違う</li>
+                        <li>CPUが選んだ4桁の数字を当てましょう</li>
+                        <li>同じ数字が複数使われることもあります</li>
+                        <li>0から始まる数字もあります（例: 0123）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 入力エリア -->
+            <div class="input-section">
+                <div class="input-container">
+                    <input type="number" class="digit-input" id="digit1" maxlength="1" min="0" max="9" placeholder="0">
+                    <input type="number" class="digit-input" id="digit2" maxlength="1" min="0" max="9" placeholder="0">
+                    <input type="number" class="digit-input" id="digit3" maxlength="1" min="0" max="9" placeholder="0">
+                    <input type="number" class="digit-input" id="digit4" maxlength="1" min="0" max="9" placeholder="0">
+                </div>
+                <button class="submit-btn" id="submitBtn">予想する 🚀</button>
+            </div>
+
+            <!-- 履歴エリア -->
+            <div class="history-section">
+                <h2>予想履歴</h2>
+                <div class="history-list" id="historyList">
+                    <p class="empty-message">まだ予想がありません</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 勝利モーダル -->
+        <div class="modal" id="winModal">
+            <div class="modal-content">
+                <div class="celebration">🎉</div>
+                <h2>おめでとうございます！</h2>
+                <p>正解です！</p>
+                <p class="answer">答え: <span id="answerDisplay"></span></p>
+                <p class="attempts-display">試行回数: <span id="finalAttempts"></span>回</p>
+                <button class="play-again-btn" id="playAgainBtn">もう一度プレイ 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
