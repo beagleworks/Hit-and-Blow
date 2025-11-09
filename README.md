@@ -87,9 +87,13 @@ Hit-and-Blow/
 
 2. ブラウザで`index.html`を開く、またはローカルサーバーを起動：
    ```bash
-   python3 -m http.server 8000
+   python3 -m http.server 1236
    ```
-   その後、ブラウザで`http://localhost:8000`にアクセス
+   uvを使用している場合：
+   ```bash
+   uv run -m http.server 1236
+   ```   
+   その後、ブラウザで`http://localhost:1236`にアクセス
 
 ## ブラウザ対応
 

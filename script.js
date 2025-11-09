@@ -12,6 +12,8 @@ class HitAndBlowGame {
         this.attempts = 0;
         this.history = [];
         this.init();
+        this.setInputsEnabled(true);
+        this.hideNewGameButton();
         this.syncSettingsControls();
     }
 
@@ -80,6 +82,35 @@ class HitAndBlowGame {
             const availableDigits = this.getAvailableDigits();
             const lastDigit = availableDigits[availableDigits.length - 1];
             digitRangeRule.textContent = `使用される数字: ${availableDigits[0]}-${lastDigit}`;
+        }
+    }
+
+    // 入力欄と送信ボタンの有効/無効を切り替え
+    setInputsEnabled(enabled) {
+        const inputs = document.querySelectorAll('.digit-input');
+        inputs.forEach(input => {
+            input.disabled = !enabled;
+        });
+
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.disabled = !enabled;
+        }
+    }
+
+    // ヘッダーの「もう一度プレイ」ボタンを表示
+    showNewGameButton() {
+        const btn = document.getElementById('newGameBtn');
+        if (btn) {
+            btn.classList.add('active');
+        }
+    }
+
+    // ヘッダーの「もう一度プレイ」ボタンを非表示
+    hideNewGameButton() {
+        const btn = document.getElementById('newGameBtn');
+        if (btn) {
+            btn.classList.remove('active');
         }
     }
 
@@ -167,6 +198,29 @@ class HitAndBlowGame {
         document.getElementById('playAgainBtn').addEventListener('click', () => {
             this.resetGame();
         });
+
+        const newGameBtn = document.getElementById('newGameBtn');
+        if (newGameBtn) {
+            newGameBtn.addEventListener('click', () => {
+                this.resetGame();
+            });
+        }
+
+        const winModalCloseBtn = document.getElementById('winModalClose');
+        if (winModalCloseBtn) {
+            winModalCloseBtn.addEventListener('click', () => {
+                this.hideWinModal();
+            });
+        }
+
+        const winModal = document.getElementById('winModal');
+        if (winModal) {
+            winModal.addEventListener('click', (event) => {
+                if (event.target === winModal) {
+                    this.hideWinModal();
+                }
+            });
+        }
     }
 
     // 予想を送信
@@ -308,7 +362,17 @@ class HitAndBlowGame {
         const modal = document.getElementById('winModal');
         document.getElementById('answerDisplay').textContent = this.answer.join('');
         document.getElementById('finalAttempts').textContent = this.attempts;
+        this.setInputsEnabled(false);
+        this.showNewGameButton();
         modal.classList.add('active');
+    }
+
+    // 勝利モーダルを非表示にする
+    hideWinModal() {
+        const modal = document.getElementById('winModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
     }
 
     // ゲームをリセット（設定を保持）
@@ -335,8 +399,12 @@ class HitAndBlowGame {
         // ルール表示を更新
         this.updateRulesDisplay();
 
+        // 入力を再度受け付けるようにし、新しいゲームボタンをしまう
+        this.setInputsEnabled(true);
+        this.hideNewGameButton();
+
         // モーダルを閉じる
-        document.getElementById('winModal').classList.remove('active');
+        this.hideWinModal();
     }
 
     // 設定を更新してゲームを再起動

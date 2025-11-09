@@ -11,7 +11,10 @@
         <header>
             <h1>🎯 ヒットアンドブロー</h1>
             <p class="subtitle">4桁の数字を当てよう！</p>
-            <button class="settings-btn" id="settingsBtn">⚙️ 設定</button>
+            <div class="header-actions">
+                <button class="settings-btn" id="settingsBtn">⚙️ 設定</button>
+                <button class="settings-btn new-game-btn" id="newGameBtn">🔄 もう一度プレイ</button>
+            </div>
         </header>
 
         <div class="game-board">
@@ -69,6 +72,7 @@
         <!-- 勝利モーダル -->
         <div class="modal" id="winModal">
             <div class="modal-content">
+                <button class="modal-close-btn" id="winModalClose" aria-label="モーダルを閉じる">✕</button>
                 <div class="celebration">🎉</div>
                 <h2>おめでとうございます！</h2>
                 <p>正解です！</p>
