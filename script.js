@@ -3,7 +3,7 @@ class HitAndBlowGame {
     constructor(settings = {}) {
         // デフォルト設定（重複なし）
         this.settings = {
-            allowDuplicates: settings.allowDuplicates === true ? true : false,
+            allowDuplicates: settings.allowDuplicates === true,
             digitCount: settings.digitCount || 10, // 使用する数字の種類数（6-16）
         };
         console.log('ゲーム設定:', this.settings);
@@ -409,9 +409,10 @@ class HitAndBlowGame {
 
     // 設定を更新してゲームを再起動
     updateSettings(newSettings) {
+        const digitCount = Math.max(6, Math.min(16, newSettings.digitCount || 10));
         this.settings = {
-            allowDuplicates: newSettings.allowDuplicates === true ? true : false,
-            digitCount: newSettings.digitCount
+            allowDuplicates: newSettings.allowDuplicates === true,
+            digitCount: digitCount
         };
         console.log('設定更新:', this.settings);
         this.resetGame();
@@ -427,14 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('settingsBtn').addEventListener('click', () => {
         const modal = document.getElementById('settingsModal');
 
-        // 現在の設定を反映
-        const duplicatesRadio = document.querySelector(`input[name="duplicates"][value="${game.settings.allowDuplicates ? 'allow' : 'forbid'}"]`);
-        if (duplicatesRadio) duplicatesRadio.checked = true;
-
-        const digitCountSlider = document.getElementById('digitCount');
-        digitCountSlider.value = game.settings.digitCount;
-        updateDigitCountDisplay(game.settings.digitCount);
-
+        game.syncSettingsControls();
         modal.classList.add('active');
     });
 

@@ -68,7 +68,7 @@ CPUがランダムに選んだ4桁の数字を推理して当てるゲームで�
 
 ## ファイル構成
 
-```
+```plaintext
 Hit-and-Blow/
 ├── index.html      # メインHTML
 ├── script.js       # ゲームロジック
