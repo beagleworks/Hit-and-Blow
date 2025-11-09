@@ -1,12 +1,14 @@
 // ゲーム状態の管理
 class HitAndBlowGame {
     constructor(settings = {}) {
-        // デフォルト設定
+        // デフォルト設定（重複なし）
         this.settings = {
-            allowDuplicates: settings.allowDuplicates !== undefined ? settings.allowDuplicates : false,
+            allowDuplicates: settings.allowDuplicates === true ? true : false,
             digitCount: settings.digitCount || 10, // 使用する数字の種類数（6-16）
         };
+        console.log('ゲーム設定:', this.settings);
         this.answer = this.generateAnswer();
+        console.log('正解:', this.answer.join(''));
         this.attempts = 0;
         this.history = [];
         this.init();
@@ -297,6 +299,7 @@ class HitAndBlowGame {
     // ゲームをリセット（設定を保持）
     resetGame() {
         this.answer = this.generateAnswer();
+        console.log('新しいゲーム開始 - 正解:', this.answer.join(''));
         this.attempts = 0;
         this.history = [];
 
@@ -324,9 +327,10 @@ class HitAndBlowGame {
     // 設定を更新してゲームを再起動
     updateSettings(newSettings) {
         this.settings = {
-            allowDuplicates: newSettings.allowDuplicates,
+            allowDuplicates: newSettings.allowDuplicates === true ? true : false,
             digitCount: newSettings.digitCount
         };
+        console.log('設定更新:', this.settings);
         this.resetGame();
     }
 }
