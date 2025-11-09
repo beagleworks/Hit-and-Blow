@@ -3,7 +3,7 @@ class HitAndBlowGame {
     constructor(settings = {}) {
         // デフォルト設定（重複なし）
         this.settings = {
-            allowDuplicates: settings.allowDuplicates === true,
+            allowDuplicates: !!settings.allowDuplicates,
             digitCount: settings.digitCount || 10, // 使用する数字の種類数（6-16）
         };
         console.log('ゲーム設定:', this.settings);
@@ -411,7 +411,7 @@ class HitAndBlowGame {
     updateSettings(newSettings) {
         const digitCount = Math.max(6, Math.min(16, newSettings.digitCount || 10));
         this.settings = {
-            allowDuplicates: newSettings.allowDuplicates === true,
+            allowDuplicates: !!newSettings.allowDuplicates,
             digitCount: digitCount
         };
         console.log('設定更新:', this.settings);
