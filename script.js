@@ -3,7 +3,7 @@ class HitAndBlowGame {
     constructor(settings = {}) {
         // デフォルト設定
         this.settings = {
-            allowDuplicates: settings.allowDuplicates !== undefined ? settings.allowDuplicates : true,
+            allowDuplicates: settings.allowDuplicates !== undefined ? settings.allowDuplicates : false,
             digitCount: settings.digitCount || 10, // 使用する数字の種類数（6-16）
         };
         this.answer = this.generateAnswer();
