@@ -102,6 +102,20 @@ class HitAndBlowGame {
                     return;
                 }
 
+                // 重複なしモードの場合、重複チェック
+                if (!this.settings.allowDuplicates && value) {
+                    const allInputs = Array.from(inputs);
+                    const currentValues = allInputs.map(inp => inp.value.toUpperCase());
+                    const duplicateCount = currentValues.filter(v => v === value).length;
+
+                    if (duplicateCount > 1) {
+                        // 重複があれば入力をクリア
+                        e.target.value = '';
+                        this.showDuplicateWarning(input);
+                        return;
+                    }
+                }
+
                 // 次の入力欄に自動移動
                 if (value.length === 1 && index < inputs.length - 1) {
                     inputs[index + 1].focus();
@@ -259,6 +273,17 @@ class HitAndBlowGame {
                 input.style.borderColor = '';
             });
         }, 1000);
+    }
+
+    // 重複警告表示
+    showDuplicateWarning(input) {
+        input.style.borderColor = '#ff9800';
+        input.style.backgroundColor = '#fff3e0';
+
+        setTimeout(() => {
+            input.style.borderColor = '';
+            input.style.backgroundColor = '';
+        }, 500);
     }
 
     // 勝利モーダルを表示
