@@ -11,6 +11,10 @@
         <header>
             <h1>🎯 ヒットアンドブロー</h1>
             <p class="subtitle">4桁の数字を当てよう！</p>
+            <div class="header-actions">
+                <button class="settings-btn" id="settingsBtn">⚙️ 設定</button>
+                <button class="settings-btn new-game-btn" id="newGameBtn">🔄 もう一度プレイ</button>
+            </div>
         </header>
 
         <div class="game-board">
@@ -39,8 +43,8 @@
                         <li><strong>Hit:</strong> 数字と位置が両方正解</li>
                         <li><strong>Blow:</strong> 数字は正解だが位置が違う</li>
                         <li>CPUが選んだ4桁の数字を当てましょう</li>
-                        <li>同じ数字が複数使われることもあります</li>
-                        <li>0から始まる数字もあります（例: 0123）</li>
+                        <li id="duplicateRule">同じ数字は使われません（重複なし）</li>
+                        <li id="digitRangeRule">使用される数字: 0-9</li>
                     </ul>
                 </div>
             </div>
@@ -48,10 +52,10 @@
             <!-- 入力エリア -->
             <div class="input-section">
                 <div class="input-container">
-                    <input type="number" class="digit-input" id="digit1" min="0" max="9" placeholder="0">
-                    <input type="number" class="digit-input" id="digit2" min="0" max="9" placeholder="0">
-                    <input type="number" class="digit-input" id="digit3" min="0" max="9" placeholder="0">
-                    <input type="number" class="digit-input" id="digit4" min="0" max="9" placeholder="0">
+                    <input type="text" class="digit-input" id="digit1" maxlength="1" placeholder="?">
+                    <input type="text" class="digit-input" id="digit2" maxlength="1" placeholder="?">
+                    <input type="text" class="digit-input" id="digit3" maxlength="1" placeholder="?">
+                    <input type="text" class="digit-input" id="digit4" maxlength="1" placeholder="?">
                 </div>
                 <button class="submit-btn" id="submitBtn">予想する 🚀</button>
             </div>
@@ -68,12 +72,50 @@
         <!-- 勝利モーダル -->
         <div class="modal" id="winModal">
             <div class="modal-content">
+                <button class="modal-close-btn" id="winModalClose" aria-label="モーダルを閉じる">✕</button>
                 <div class="celebration">🎉</div>
                 <h2>おめでとうございます！</h2>
                 <p>正解です！</p>
                 <p class="answer">答え: <span id="answerDisplay"></span></p>
                 <p class="attempts-display">試行回数: <span id="finalAttempts"></span>回</p>
                 <button class="play-again-btn" id="playAgainBtn">もう一度プレイ 🔄</button>
+            </div>
+        </div>
+
+        <!-- 設定モーダル -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-content settings-modal-content">
+                <h2>⚙️ ゲーム設定</h2>
+
+                <div class="settings-group">
+                    <label class="settings-label">数字の重複</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="duplicates" value="allow">
+                            <span>許可する</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="duplicates" value="forbid" checked>
+                            <span>許可しない</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label class="settings-label">使用する数字の種類数</label>
+                    <div class="slider-container">
+                        <input type="range" id="digitCount" min="6" max="16" value="10" class="slider">
+                        <div class="slider-value">
+                            <span id="digitCountValue">10</span>
+                            <span class="slider-hint" id="digitRange">(0-9)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-buttons">
+                    <button class="settings-cancel-btn" id="settingsCancelBtn">キャンセル</button>
+                    <button class="settings-save-btn" id="settingsSaveBtn">保存して新しいゲームを開始</button>
+                </div>
             </div>
         </div>
     </div>
