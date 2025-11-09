@@ -12,6 +12,7 @@ class HitAndBlowGame {
         this.attempts = 0;
         this.history = [];
         this.init();
+        this.syncSettingsControls();
     }
 
     // 利用可能な数字/文字のリストを取得
@@ -79,6 +80,20 @@ class HitAndBlowGame {
             const availableDigits = this.getAvailableDigits();
             const lastDigit = availableDigits[availableDigits.length - 1];
             digitRangeRule.textContent = `使用される数字: ${availableDigits[0]}-${lastDigit}`;
+        }
+    }
+
+    // 設定モーダルのコントロールをゲーム設定に同期
+    syncSettingsControls() {
+        const duplicatesRadio = document.querySelector(`input[name="duplicates"][value="${this.settings.allowDuplicates ? 'allow' : 'forbid'}"]`);
+        if (duplicatesRadio) {
+            duplicatesRadio.checked = true;
+        }
+
+        const digitCountSlider = document.getElementById('digitCount');
+        if (digitCountSlider) {
+            digitCountSlider.value = this.settings.digitCount;
+            updateDigitCountDisplay(this.settings.digitCount);
         }
     }
 
