@@ -1,18 +1,56 @@
 // ゲーム状態の管理
 class HitAndBlowGame {
-    constructor() {
+    constructor(settings = {}) {
+        // デフォルト設定
+        this.settings = {
+            allowDuplicates: settings.allowDuplicates !== undefined ? settings.allowDuplicates : true,
+            digitCount: settings.digitCount || 10, // 使用する数字の種類数（6-16）
+        };
         this.answer = this.generateAnswer();
         this.attempts = 0;
         this.history = [];
         this.init();
     }
 
+    // 利用可能な数字/文字のリストを取得
+    getAvailableDigits() {
+        const digits = [];
+        for (let i = 0; i < this.settings.digitCount; i++) {
+            if (i < 10) {
+                digits.push(i.toString());
+            } else {
+                // 10以降はA-F
+                digits.push(String.fromCharCode(65 + (i - 10))); // 65 = 'A'
+            }
+        }
+        return digits;
+    }
+
     // 4桁のランダムな数字を生成
     generateAnswer() {
+        const availableDigits = this.getAvailableDigits();
         const digits = [];
-        for (let i = 0; i < 4; i++) {
-            digits.push(Math.floor(Math.random() * 10));
+
+        if (this.settings.allowDuplicates) {
+            // 重複を許可する場合
+            for (let i = 0; i < 4; i++) {
+                const randomIndex = Math.floor(Math.random() * availableDigits.length);
+                digits.push(availableDigits[randomIndex]);
+            }
+        } else {
+            // 重複を許可しない場合
+            const shuffled = [...availableDigits];
+            // Fisher-Yatesシャッフル
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            // 最初の4つを取得
+            for (let i = 0; i < 4; i++) {
+                digits.push(shuffled[i]);
+            }
         }
+
         return digits;
     }
 
@@ -20,6 +58,26 @@ class HitAndBlowGame {
     init() {
         this.setupEventListeners();
         this.updateDisplay();
+        this.updateRulesDisplay();
+    }
+
+    // ルール説明を更新
+    updateRulesDisplay() {
+        // 重複ルールの更新
+        const duplicateRule = document.getElementById('duplicateRule');
+        if (duplicateRule) {
+            duplicateRule.textContent = this.settings.allowDuplicates
+                ? '同じ数字が複数使われることもあります'
+                : '同じ数字は使われません（重複なし）';
+        }
+
+        // 数字の範囲ルールの更新
+        const digitRangeRule = document.getElementById('digitRangeRule');
+        if (digitRangeRule) {
+            const availableDigits = this.getAvailableDigits();
+            const lastDigit = availableDigits[availableDigits.length - 1];
+            digitRangeRule.textContent = `使用される数字: ${availableDigits[0]}-${lastDigit}`;
+        }
     }
 
     // イベントリスナーの設定
@@ -28,15 +86,18 @@ class HitAndBlowGame {
         const inputs = document.querySelectorAll('.digit-input');
         inputs.forEach((input, index) => {
             input.addEventListener('input', (e) => {
-                const value = e.target.value;
+                let value = e.target.value.toUpperCase();
+                e.target.value = value;
 
                 // 1桁のみ許可
                 if (value.length > 1) {
                     e.target.value = value.slice(0, 1);
+                    value = e.target.value;
                 }
 
-                // 数字のみ許可
-                if (!/^\d*$/.test(e.target.value)) {
+                // 使用可能な数字/文字のみ許可
+                const availableDigits = this.getAvailableDigits();
+                if (value && !availableDigits.includes(value)) {
                     e.target.value = '';
                     return;
                 }
@@ -89,7 +150,7 @@ class HitAndBlowGame {
                 input.focus();
                 return;
             }
-            guess.push(parseInt(input.value));
+            guess.push(input.value.toUpperCase());
         }
 
         // ヒットとブローの計算
@@ -208,7 +269,7 @@ class HitAndBlowGame {
         modal.classList.add('active');
     }
 
-    // ゲームをリセット
+    // ゲームをリセット（設定を保持）
     resetGame() {
         this.answer = this.generateAnswer();
         this.attempts = 0;
@@ -228,8 +289,20 @@ class HitAndBlowGame {
         inputs.forEach(input => input.value = '');
         inputs[0].focus();
 
+        // ルール表示を更新
+        this.updateRulesDisplay();
+
         // モーダルを閉じる
         document.getElementById('winModal').classList.remove('active');
+    }
+
+    // 設定を更新してゲームを再起動
+    updateSettings(newSettings) {
+        this.settings = {
+            allowDuplicates: newSettings.allowDuplicates,
+            digitCount: newSettings.digitCount
+        };
+        this.resetGame();
     }
 }
 
@@ -237,4 +310,57 @@ class HitAndBlowGame {
 let game;
 document.addEventListener('DOMContentLoaded', () => {
     game = new HitAndBlowGame();
+
+    // 設定ボタンのイベントリスナー
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+        const modal = document.getElementById('settingsModal');
+
+        // 現在の設定を反映
+        const duplicatesRadio = document.querySelector(`input[name="duplicates"][value="${game.settings.allowDuplicates ? 'allow' : 'forbid'}"]`);
+        if (duplicatesRadio) duplicatesRadio.checked = true;
+
+        const digitCountSlider = document.getElementById('digitCount');
+        digitCountSlider.value = game.settings.digitCount;
+        updateDigitCountDisplay(game.settings.digitCount);
+
+        modal.classList.add('active');
+    });
+
+    // 設定モーダルのキャンセルボタン
+    document.getElementById('settingsCancelBtn').addEventListener('click', () => {
+        document.getElementById('settingsModal').classList.remove('active');
+    });
+
+    // 設定モーダルの保存ボタン
+    document.getElementById('settingsSaveBtn').addEventListener('click', () => {
+        const allowDuplicates = document.querySelector('input[name="duplicates"]:checked').value === 'allow';
+        const digitCount = parseInt(document.getElementById('digitCount').value);
+
+        game.updateSettings({
+            allowDuplicates: allowDuplicates,
+            digitCount: digitCount
+        });
+
+        document.getElementById('settingsModal').classList.remove('active');
+    });
+
+    // スライダーの値変更イベント
+    const digitCountSlider = document.getElementById('digitCount');
+    digitCountSlider.addEventListener('input', (e) => {
+        updateDigitCountDisplay(parseInt(e.target.value));
+    });
 });
+
+// 数字の種類数の表示を更新
+function updateDigitCountDisplay(count) {
+    document.getElementById('digitCountValue').textContent = count;
+
+    let rangeText = '';
+    if (count <= 10) {
+        rangeText = `(0-${count - 1})`;
+    } else {
+        const lastChar = String.fromCharCode(65 + (count - 11)); // 65 = 'A'
+        rangeText = `(0-9, A-${lastChar})`;
+    }
+    document.getElementById('digitRange').textContent = rangeText;
+}
